@@ -10,24 +10,29 @@ const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
     <header className="app-header">
       <div className="header-content">
         <h1 className="app-title">
-          🎓 Smart Study Material Organizer
+          📚 Study Mate
         </h1>
         <p className="app-subtitle">
-          Upload PDFs, extract keywords automatically, and search your study materials
+          Your intelligent study companion. Upload PDFs, extract insights automatically, 
+          and find your materials instantly with AI-powered search.
         </p>
         
         <nav className="tab-navigation">
           <button
             className={`tab-button ${activeTab === 'upload' ? 'active' : ''}`}
             onClick={() => onTabChange('upload')}
+            aria-label="Upload documents"
           >
-            📤 Upload
+            <span className="tab-icon">📤</span>
+            <span>Upload</span>
           </button>
           <button
             className={`tab-button ${activeTab === 'search' ? 'active' : ''}`}
             onClick={() => onTabChange('search')}
+            aria-label="Search documents"
           >
-            🔍 Search
+            <span className="tab-icon">🔍</span>
+            <span>Search</span>
           </button>
         </nav>
       </div>

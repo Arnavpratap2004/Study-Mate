@@ -10,6 +10,7 @@ const Upload: React.FC<UploadProps> = ({ onUploadSuccess }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState<UploadResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showAllKeywords, setShowAllKeywords] = useState(false);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -65,7 +66,7 @@ const Upload: React.FC<UploadProps> = ({ onUploadSuccess }) => {
 
   return (
     <div className="upload-container">
-      <h2>📚 Upload PDF Document</h2>
+      <h2>📤 Upload Your Study Material</h2>
       
       <div className="upload-form">
         <div className="file-input-container">
@@ -78,7 +79,18 @@ const Upload: React.FC<UploadProps> = ({ onUploadSuccess }) => {
             className="file-input"
           />
           <label htmlFor="pdf-upload" className="file-input-label">
-            {selectedFile ? selectedFile.name : 'Choose PDF file...'}
+            {selectedFile ? (
+              <span style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedFile.name}</span>
+            ) : (
+              <>
+                <span style={{ fontSize: '1rem', fontWeight: 500 }}>
+                  Drop your PDF here or click to browse
+                </span>
+                <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                  Maximum file size: 10MB
+                </span>
+              </>
+            )}
           </label>
         </div>
 
@@ -122,11 +134,20 @@ const Upload: React.FC<UploadProps> = ({ onUploadSuccess }) => {
             
             {uploadResult.keywords.length > 0 && (
               <div className="keywords-preview">
-                <strong>Top Keywords:</strong>
+                <strong>Keywords:</strong>
                 <div className="tags">
-                  {uploadResult.keywords.slice(0, 10).map((keyword, index) => (
-                    <span key={index} className="tag">{keyword}</span>
+                  {(showAllKeywords ? uploadResult.keywords : uploadResult.keywords.slice(0, 10)).map((keyword, index) => (
+                    <span key={index} className="tag keyword-tag">{keyword}</span>
                   ))}
+                  {uploadResult.keywords.length > 10 && (
+                    <button
+                      className="tag more-tag expandable"
+                      onClick={() => setShowAllKeywords(!showAllKeywords)}
+                      aria-label={showAllKeywords ? 'Show less keywords' : 'Show more keywords'}
+                    >
+                      {showAllKeywords ? '− Show less' : `+${uploadResult.keywords.length - 10} more`}
+                    </button>
+                  )}
                 </div>
               </div>
             )}

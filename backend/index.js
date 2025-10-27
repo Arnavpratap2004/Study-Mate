@@ -19,29 +19,29 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.json({ 
     message: "Smart Study Material Organizer API",
     version: "1.0.0",
     endpoints: {
-      upload: "POST /upload",
-      search: "GET /search?keyword=<keyword>",
-      files: "GET /files"
+      upload: "POST /api/upload",
+      search: "GET /api/search?keyword=<keyword>",
+      files: "GET /api/files"
     }
   });
 });
 
 // Upload endpoint - accepts PDF files
-app.post("/upload", upload.single('pdf'), uploadHandler);
+app.post("/api/upload", upload.single('pdf'), uploadHandler);
 
 // Search endpoint - search by keyword
-app.get("/search", searchHandler);
+app.get("/api/search", searchHandler);
 
 // Get all files endpoint (for debugging/admin)
-app.get("/files", getAllFilesHandler);
+app.get("/api/files", getAllFilesHandler);
 
 // Health check endpoint
-app.get("/health", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({ 
     status: "OK", 
     timestamp: new Date().toISOString(),

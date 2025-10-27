@@ -47,66 +47,86 @@ const Search: React.FC = () => {
     });
   };
 
-  const ResultCard: React.FC<{ result: SearchResult }> = ({ result }) => (
-    <div className="result-card">
-      <div className="result-header">
-        <h3 className="result-title">📄 {result.fileName}</h3>
-        <div className="result-meta">
-          <span className="file-size">{formatFileSize(result.fileSize)}</span>
-          <span className="upload-date">{formatDate(result.uploadDate)}</span>
+  const ResultCard: React.FC<{ result: SearchResult }> = ({ result }) => {
+    const [showAllKeywords, setShowAllKeywords] = useState(false);
+    const [showAllTopics, setShowAllTopics] = useState(false);
+
+    const keywordsToShow = showAllKeywords ? result.keywords : result.keywords.slice(0, 8);
+    const topicsToShow = showAllTopics ? result.topics : result.topics.slice(0, 5);
+
+    return (
+      <div className="result-card">
+        <div className="result-header">
+          <h3 className="result-title">📄 {result.fileName}</h3>
+          <div className="result-meta">
+            <span className="file-size">{formatFileSize(result.fileSize)}</span>
+            <span className="upload-date">{formatDate(result.uploadDate)}</span>
+          </div>
+        </div>
+
+        <div className="result-content">
+          {result.keywords.length > 0 && (
+            <div className="keywords-section">
+              <strong>Keywords:</strong>
+              <div className="tags">
+                {keywordsToShow.map((keyword, index) => (
+                  <span key={index} className="tag keyword-tag">{keyword}</span>
+                ))}
+                {result.keywords.length > 8 && (
+                  <button
+                    className="tag more-tag expandable"
+                    onClick={() => setShowAllKeywords(!showAllKeywords)}
+                    aria-label={showAllKeywords ? 'Show less keywords' : 'Show more keywords'}
+                  >
+                    {showAllKeywords ? '− Show less' : `+${result.keywords.length - 8} more`}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {result.topics.length > 0 && (
+            <div className="topics-section">
+              <strong>Topics:</strong>
+              <div className="tags">
+                {topicsToShow.map((topic, index) => (
+                  <span key={index} className="tag topic-tag">{topic}</span>
+                ))}
+                {result.topics.length > 5 && (
+                  <button
+                    className="tag more-tag expandable"
+                    onClick={() => setShowAllTopics(!showAllTopics)}
+                    aria-label={showAllTopics ? 'Show less topics' : 'Show more topics'}
+                  >
+                    {showAllTopics ? '− Show less' : `+${result.topics.length - 5} more`}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="result-actions">
+          {result.s3Url ? (
+            <a 
+              href={result.s3Url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="view-button"
+            >
+              📖 View PDF
+            </a>
+          ) : (
+            <span className="error-text">❌ File not available</span>
+          )}
         </div>
       </div>
-
-      <div className="result-content">
-        {result.keywords.length > 0 && (
-          <div className="keywords-section">
-            <strong>Keywords:</strong>
-            <div className="tags">
-              {result.keywords.slice(0, 8).map((keyword, index) => (
-                <span key={index} className="tag keyword-tag">{keyword}</span>
-              ))}
-              {result.keywords.length > 8 && (
-                <span className="tag more-tag">+{result.keywords.length - 8} more</span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {result.topics.length > 0 && (
-          <div className="topics-section">
-            <strong>Topics:</strong>
-            <div className="tags">
-              {result.topics.slice(0, 5).map((topic, index) => (
-                <span key={index} className="tag topic-tag">{topic}</span>
-              ))}
-              {result.topics.length > 5 && (
-                <span className="tag more-tag">+{result.topics.length - 5} more</span>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="result-actions">
-        {result.s3Url ? (
-          <a 
-            href={result.s3Url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="view-button"
-          >
-            📖 View PDF
-          </a>
-        ) : (
-          <span className="error-text">❌ File not available</span>
-        )}
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="search-container">
-      <h2>🔍 Search Study Materials</h2>
+      <h2>🔍 Find Your Study Materials</h2>
       
       <form onSubmit={handleSearch} className="search-form">
         <div className="search-input-container">
